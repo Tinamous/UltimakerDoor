@@ -1,6 +1,9 @@
 handleLength = 25;
 catchLength = 10;
-acrylicWidth = 3;
+acrylicWidth = 3.5;
+
+buildLeft = false;
+buildRight = false;
 
 module handle(h) {
     linear_extrude(height = h) {         
@@ -29,5 +32,10 @@ module rightCatch() {
 
 handle(handleLength);
 
-leftCatch();
-//rightCatch();
+if (buildLeft) {
+    leftCatch();
+}
+
+if (buildRight) {
+    rightCatch();
+}
