@@ -2,6 +2,11 @@
 
 This is a set of runners that bolt to the Ultimaker 2+ so that a 3mm acrylic sheet can be used as a vertical sliding door. It does require the use of the Ultimaker bolts so may void your warranty.
 
+*** WORK IN PROGRESS ***
+
+** Regular (non-extended) Ultimaker runners untested.
+** Sizes other than 3mm untested.
+
 ## 3D Printed Parts
 
 The stl files are for 3mm Acrylic. If you wish to use another thickness modify the Build.bat file (or the scad file and build manually).
