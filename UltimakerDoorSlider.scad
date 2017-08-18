@@ -5,8 +5,8 @@ acrylicWidth = 4;
 // Ultimaker Extended
 extended = true;
 
-includeLowerSections = false;
-includeUpperSections = true; 
+includeLowerSections = true;
+includeUpperSections = false; 
 includeLeftSections = true;
 includeRightSections = true;
 
@@ -16,7 +16,12 @@ testPiece = false;
 
 // Include knotches on the inside surface to help latch the sliding door.
 knotches = true;
+knotchSpacing = 30;
 
+// How much of the base part is filled to 
+// stop the door going all the way down
+// 60mm gives just above display
+filledHeight = 60;
 
 distanceBetweenHoles = 122;
 ultimakerWidth = 339; 
@@ -77,11 +82,13 @@ module bracket(h) {
     }
 }
 
+
+
 // Well, more take them away
 module addRightKnotches(h) {
     // start at 15mm as this keeps the underside
     // vent gap in the Ultimaker open
-    for (zOffset = [15: 15: h]) {
+    for (zOffset = [15: knotchSpacing: h]) {
         translate([0,6+acrylicWidth, zOffset]) {
             rotate([0,90,-90]) {
                 linear_extrude(height = 4) { 
@@ -95,7 +102,7 @@ module addRightKnotches(h) {
 module addLeftKnotches(h) {
     // start at 15mm as this keeps the underside
     // vent gap in the Ultimaker open
-    for (zOffset = [15: 15: h]) {
+    for (zOffset = [15: knotchSpacing: h]) {
         translate([-3,6+acrylicWidth, zOffset]) {
             rotate([0,90,-90]) {
                 linear_extrude(height = 4) { 
@@ -166,12 +173,12 @@ module main(h, firstHoleZ, fillBase) {
     // fill the bottom(/top) to stop acrylic calling out.
     if (fillBase) {
         if (includeRightSections) {
-            cube([20,6 + acrylicWidth,15]);
+            cube([20, 6 + acrylicWidth, filledHeight]);
         }
         
         if (includeLeftSections) {
             translate([-seperationBetweenSides-24,0,0]) {
-                cube([20,6 + acrylicWidth,15]);
+                cube([20, 6 + acrylicWidth, filledHeight]);
             }
         }
     }
