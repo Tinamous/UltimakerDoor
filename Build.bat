@@ -6,7 +6,12 @@ del *.stl
 @echo Building Test Piece for hole alignment and size check
 "C:\Program Files\OpenSCAD\openscad.com" -o UltimakerDoorSlider-TestPiece.stl -D testPiece=true UltimakerDoorSlider.scad
 
+@echo =================================================
 @echo Building Ultimaker Extended Files
+
+@echo Building Complete Set
+"C:\Program Files\OpenSCAD\openscad.com" -o UM2E-Door-All-3mm.stl -D acrylicWidth=4;testPiece=false;extended=true;includeLowerSections=true;includeUpperSections=true;includeLeftSections=true;includeRightSections=true UltimakerDoorSlider.scad
+
 @echo Building Lower Sections
 "C:\Program Files\OpenSCAD\openscad.com" -o UM2E-Door-Lower-Both-3mm.stl -D acrylicWidth=4;testPiece=false;extended=true;includeLowerSections=true;includeUpperSections=false;includeLeftSections=true;includeRightSections=true UltimakerDoorSlider.scad
 "C:\Program Files\OpenSCAD\openscad.com" -o UM2E-Door-Lower-Left-3mm.stl -D acrylicWidth=4;testPiece=false;extended=true;includeLowerSections=true;includeUpperSections=false;includeLeftSections=true;includeRightSections=false UltimakerDoorSlider.scad
@@ -17,7 +22,12 @@ del *.stl
 "C:\Program Files\OpenSCAD\openscad.com" -o UM2E-Door-Upper-Left-3mm.stl -D acrylicWidth=4;testPiece=false;extended=true;includeLowerSections=false;includeUpperSections=true;includeLeftSections=true;includeRightSections=false UltimakerDoorSlider.scad
 "C:\Program Files\OpenSCAD\openscad.com" -o UM2E-Door-Upper-Right-3mm.stl -D acrylicWidth=4;testPiece=false;extended=true;includeLowerSections=false;includeUpperSections=true;includeLeftSections=false;includeRightSections=true UltimakerDoorSlider.scad
 
+@echo =================================================
 @echo Building Ultimaker (Regular) Files.
+
+@echo Building Complete Set
+"C:\Program Files\OpenSCAD\openscad.com" -o UM2-Door-All-3mm.stl -D acrylicWidth=4;testPiece=false;extended=false;includeLowerSections=true;includeUpperSections=true;includeLeftSections=true;includeRightSections=true UltimakerDoorSlider.scad
+
 @echo Building Lower Sections
 "C:\Program Files\OpenSCAD\openscad.com" -o UM2-Door-Lower-Both-3mm.stl -D acrylicWidth=4;testPiece=false;extended=false;includeLowerSections=true;includeUpperSections=false;includeLeftSections=true;includeRightSections=true UltimakerDoorSlider.scad
 "C:\Program Files\OpenSCAD\openscad.com" -o UM2-Door-Lower-Left-3mm.stl -D acrylicWidth=4;testPiece=false;extended=false;includeLowerSections=true;includeUpperSections=false;includeLeftSections=true;includeRightSections=false UltimakerDoorSlider.scad

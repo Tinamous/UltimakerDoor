@@ -1,38 +1,64 @@
-// Allow a tollerance on the acrylic width
-// e.g. 3mm acrylic can be 3.5 or even 4 in places.
-acrylicWidth = 4;
+/* [Model Generation Selection] */
 
-// Ultimaker Extended
+// Generate sliders for Ultimaker2 Extended or the regular Ultimaker2
 extended = true;
 
+// Include the lower runner halves
 includeLowerSections = true;
-includeUpperSections = false; 
+
+// Include the upper runner halves
+includeUpperSections = true; 
+
+// Incldue runners for the left side of the printer
 includeLeftSections = true;
+
+// Inlude runners for the right side of the printer
 includeRightSections = true;
 
-// debug support
-includeVisualisation = false;
-testPiece = false;
+/* [Knotches] */
 
 // Include knotches on the inside surface to help latch the sliding door.
 knotches = true;
+
+// Spacing between knotches
 knotchSpacing = 30;
 
-// How much of the base part is filled to 
-// stop the door going all the way down
-// 60mm gives just above display
-filledHeight = 60;
+/* [Model Customisation] */
 
-distanceBetweenHoles = 122;
+// How high up the base part is filled to stop the door going all the way down. 
+filledHeight = 60;
+// 60mm gives just above display Actual fill is this - the floor offset
+
+// How much speace to leave between the bottom of the runners and the floor (bottom of the UM)
+floorOffset = 15;
+
+// Width of acrylic door. allow a tollerance, e.g. 3mm cast acrylic can be 3.5mm or even 4mm in places.
+acrylicWidth = 4;
+
+/* [Testing] */
+
+// Create the test piece only. Useful for checking fit to the UM.
+testPiece = false;
+
+/* [Hidden] */
+
+// Visualisation for UM.
 ultimakerWidth = 339; 
 
+// UM2 Extended only. 
+distanceBetweenHoles = 122;
+
+// Show the Ultimaker, door etc for model checking
+includeVisualisation = false;
+
+// Gap between models.
 seperationBetweenSides = 0;
 // -32 for offset in right bracked.
 //seperationBetweenSides = ultimakerWidth - (38*2);
 // gives 0 width for ultimaker inbeterrn
  //seperationBetweenSides = -(38*2);
 
-module showUltimaker() {
+module showUltimakerExtended() {
     // down 2mm as the runners are raised up by 2mm.
     translate([-(ultimakerWidth-38 +2) ,11,-2]) {
         cube([ultimakerWidth,200,490]);
@@ -48,10 +74,30 @@ module showUltimaker() {
     }
 }
 
+module showUltimakerRegular() {
+    // down 2mm as the runners are raised up by 2mm.
+    translate([-(ultimakerWidth-38 +2) ,11,-2]) {
+        cube([ultimakerWidth,200,388]);
+        
+        // Show Screws.
+        translate([0,5-1,0]) {
+            translate([0,0,69.7]) {
+                cube([400,2,2]);
+            }
+            translate([0,0,69.7 + 131.9]) {
+                cube([400,2,2]);
+            }
+            translate([0,0,69.7 + 131.9 + 134.1]) {
+                cube([400,2,2]);
+            }    
+        }
+    }
+}
+
 module showDoor() {
 xOffset = -(ultimakerWidth-38 +2) + 19;
 
-    translate([xOffset ,2,15]) {
+    translate([xOffset ,2,15 + filledHeight-floorOffset]) {
         % cube([300,acrylicWidth,500]);
     }
 }
@@ -135,19 +181,46 @@ module leftBracket (h)  {
     }
 }    
 
-module screwHole(zPosition) {
-    translate([-395,0,zPosition]) {
+// Used by the lower section as that wants to be in a set place
+module screwHole(zPosition, isBase) {
+    if (isBase) {
+        // Single fixed place hole
+        translate([-395,0,zPosition]) {
+            rotate([0,90,0]) {
+                cylinder(d=3.5, h=600, $fn=20);
+            }
+        }
+    } else {
+        longScrewHole(zPosition);
+    }
+}
+
+// User by the upper position to allow for a little fitting tollerance.
+module longScrewHole(zPosition) {   
+    // Larger hole for adjustment.
+    translate([-395,0,zPosition-1]) {
         rotate([0,90,0]) {
-            #cylinder(d=3.5, h=600, $fn=20);
+            cylinder(d=3.5, h=600, $fn=20);
+        }
+    }
+    
+    // Join the holes.
+    translate([-395,-3.6/2,zPosition-(2/2)]) {
+        cube([600,3.6,2]);
+    }
+    
+    translate([-395,0,zPosition+1]) {
+        rotate([0,90,0]) {
+            cylinder(d=3.5, h=600, $fn=20);
         }
     }
 }
 
-module main(h, firstHoleZ, fillBase) {
+module main(h, fillBase, holes) {
     // for 2 sections to make a door on extended
     
     echo ("Height = ", h);
-    echo ("First Hole At = ", firstHoleZ);
+    echo ("First Hole At = ", holes[0]);
     
     difference() {
         union() {
@@ -162,10 +235,12 @@ module main(h, firstHoleZ, fillBase) {
             }
         }
         union() {
-            translate([34-3,11+acrylicWidth,0]) {
-                // Holes distance from top which actually becomes the bottom
-                screwHole(firstHoleZ);
-                screwHole(firstHoleZ+distanceBetweenHoles);
+            
+            translate([34-3,11+acrylicWidth,0]) {                
+                // holes.
+                for (holeZPosition = holes) {
+                    screwHole(holeZPosition, fillBase);
+                }                
             }
         }
     }   
@@ -173,12 +248,12 @@ module main(h, firstHoleZ, fillBase) {
     // fill the bottom(/top) to stop acrylic calling out.
     if (fillBase) {
         if (includeRightSections) {
-            cube([20, 6 + acrylicWidth, filledHeight]);
+            cube([20, 6 + acrylicWidth, filledHeight - floorOffset]);
         }
         
         if (includeLeftSections) {
             translate([-seperationBetweenSides-24,0,0]) {
-                cube([20, 6 + acrylicWidth, filledHeight]);
+                cube([20, 6 + acrylicWidth, filledHeight - floorOffset]);
             }
         }
     }
@@ -209,6 +284,9 @@ module upperSectionMarker() {
     }
 }
 
+// ==============================================
+// UM2 Extended runners.
+// ==============================================
 module extendedUpperDoorRunners() {
     // Set-up so that 2 pieced
     // can be stacked on top of each other
@@ -217,9 +295,12 @@ module extendedUpperDoorRunners() {
     lowerPartHeight = (distanceBetweenHoles/2); // 122/2 == 61mm.
     
     // 28mm lower in height to so they don't jut over the top.
-    height = lowerPartHeight + (distanceBetweenHoles) + (distanceBetweenHoles/2) - 27; 
+    // + 7.8mm takes the part to the top of the UME
+    height = lowerPartHeight + (distanceBetweenHoles) + (distanceBetweenHoles/2) - 27 + 7.8; 
     
-    main(height, lowerPartHeight, false);
+    holes = [lowerPartHeight, lowerPartHeight + distanceBetweenHoles];
+    
+    main(height, false, holes);
 }
 
 module extendedLowerDoorRunners() {
@@ -228,9 +309,11 @@ module extendedLowerDoorRunners() {
     // leaves 2mm gap on floor
     lowerPartHeight = 68; 
     
-    height = lowerPartHeight + (distanceBetweenHoles) + (distanceBetweenHoles/2); // distance between screw holes.
+    height = lowerPartHeight + (distanceBetweenHoles) + (distanceBetweenHoles/2)-  floorOffset; 
     
-    main(height, lowerPartHeight, true);
+    holes = [lowerPartHeight -  floorOffset, lowerPartHeight + distanceBetweenHoles-  floorOffset];
+    
+    main(height, true, holes);
 }
 
 module extendedDoorRunners() {
@@ -240,7 +323,7 @@ module extendedDoorRunners() {
         // For Printing
         translate([0,30,0]) {
         // For Visualisation
-        //translate([0,0,68 + 122 + 61 + 0.5]) {
+        //translate([0,0,68 + 122 + 61 + 0.5-floorOffset]) {
             extendedUpperDoorRunners();
         }
     }
@@ -250,21 +333,41 @@ module extendedDoorRunners() {
     }
 }
 
+// ==============================================
+// Regular UM2 runners.
+// ==============================================
 module regularDoorRunners() {
+    
+// Overall height 388mm
+// Holes:
+// 69.7 + 131.9 + 134.1 = 335.7
+// 69.7 + 131.9 = 201.6
+// 69.7
+    
+// Need to take off any offset
+splitPoint = 69.7 + 131.9;       
+   
+    // Upper section
     if (includeUpperSections) {
         // For Printing
         translate([0,30,0]) {
-            // For Visualisation
-            //translate([0,0,68 + 122 + 61 + 0.5]) {
-            height =  distanceBetweenHoles + distanceBetweenHoles/2;
-            main(height, 0, false);
+        // For Visualisation
+        //translate([0,0,splitPoint-floorOffset]) {
+            // UM full height - 20mm offset at top
+            height = 388 - 20 - splitPoint;
+            holes = [0, 134.1];
+            main(height, false, holes);
         }
     }
-    
+  
+    // Lower section
     if (includeLowerSections) {
         // Joint is in the middle of the second screw.
-        height = 68 + distanceBetweenHoles;
-        main(height, 68, true);
+        height = splitPoint - floorOffset; 
+        
+        // z positions for holes.
+        holes = [69.7 - floorOffset, 201.6 - floorOffset];
+        main(height, true, holes);
     }
 }
 
@@ -285,15 +388,21 @@ if (testPiece) {
     if (includeVisualisation) {
 
         // Visualisation
-        %showUltimaker();
-        %showDoor();
+        translate([0,0,-floorOffset]) {
+            if (extended) {
+                %showUltimakerExtended();
+            } else {
+                %showUltimakerRegular();
+            }
+            %showDoor();
 
-        translate([0,0,251.5]) {
-            %upperSectionMarker();
-        }
+            translate([0,0,251.5]) {
+                %upperSectionMarker();
+            }
 
-        translate([0,0,-2]) {
-            %lowerSectionMarker();
+            translate([0,0,-2]) {
+                %lowerSectionMarker();
+            }
         }
     }
 }
