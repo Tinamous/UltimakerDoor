@@ -2,7 +2,7 @@
 
 This is a set of runners that bolt to the Ultimaker 2+ so that a 3mm acrylic sheet can be used as a vertical sliding door. It does require the use of the Ultimaker bolts so may void your warranty.
 
-*** WORK IN PROGRESS ***
+The files in this folder have a 2mm gap between the desk and when the runner starts. This should be enough, but can be increased if needed with the "floorOffset" variable in OpenSCAD.
 
 ** Regular (non-extended) Ultimaker runners untested.
 ** Sizes other than 3mm untested.
@@ -22,14 +22,15 @@ A small gap is left at the base to keep the runners clear of the desk top.
 
 Lower sections include a stop block at the bottom to prevent the door from going below the level of the Ultimaker box which may hinder ventilation to the electronics mounted underneath the UM.
 
-Printer settings:
-Slicer: Cura
-Layer Height: 0.2 or 0.25
-Wall Thickness: 0.7
-Infill Density: 18%
-Speed: 60mm/s
-Supports: None
-Build Plade Adhesion: Brim (14mm)
+## Printer settings:
+* Slicer: Cura
+* Layer Height: 0.2 or 0.25
+* Wall Thickness: 0.7
+* Infill Density: 18%
+* Speed: 60mm/s
+* Supports: None
+* Build Plade Adhesion: Brim (14mm)
+* Nozzle: 0.4mm
 
 
 ## Laser Cut Parts.

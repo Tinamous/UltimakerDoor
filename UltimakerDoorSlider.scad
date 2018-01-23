@@ -30,7 +30,8 @@ filledHeight = 60;
 // 60mm gives just above display Actual fill is this - the floor offset
 
 // How much speace to leave between the bottom of the runners and the floor (bottom of the UM)
-floorOffset = 15;
+//floorOffset = 15; //- if you have feet around the corners of the printer.
+floorOffset = 2;
 
 // Width of acrylic door. allow a tollerance, e.g. 3mm cast acrylic can be 3.5mm or even 4mm in places.
 acrylicWidth = 4;
